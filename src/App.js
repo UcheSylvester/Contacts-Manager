@@ -6,26 +6,7 @@ import * as ContactsAPI from "./utils/ContactsAPI";
 
 class App extends React.Component {
   state = {
-    contacts: [
-      {
-        id: "tyler",
-        name: "Tyler McGinnis",
-        handle: "@tylermcginnis",
-        avatarURL: "http://localhost:5001/tyler.jpg",
-      },
-      {
-        id: "karen",
-        name: "Karen Isgrigg",
-        handle: "@karen_isgrigg",
-        avatarURL: "http://localhost:5001/karen.jpg",
-      },
-      {
-        id: "richard",
-        name: "Richard Kalehoff",
-        handle: "@richardkalehoff",
-        avatarURL: "http://localhost:5001/richard.jpg",
-      },
-    ],
+    contacts: [],
   };
 
   componentDidMount() {
@@ -47,12 +28,18 @@ class App extends React.Component {
     getAllContacts();
   }
 
-  removeContact = (contact) => {
-    this.setState((currentState) => ({
-      contacts: currentState.contacts.filter((c) => c.id !== contact.id),
-    }));
+  removeContact = async (contact) => {
+    try {
+      const response = await ContactsAPI.remove(contact);
 
-    ContactsAPI.remove(contact);
+      console.log({ response });
+
+      this.setState((currentState) => ({
+        contacts: currentState.contacts.filter((c) => c.id !== contact.id),
+      }));
+    } catch (error) {
+      console.log({ error });
+    }
   };
 
   render() {
