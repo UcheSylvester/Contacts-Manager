@@ -2,6 +2,8 @@ import React from "react";
 import "./App.css";
 import ListContacts from "./ListContacts";
 
+import * as ContactsAPI from "./utils/ContactsAPI";
+
 class App extends React.Component {
   state = {
     contacts: [
@@ -26,10 +28,31 @@ class App extends React.Component {
     ],
   };
 
+  componentDidMount() {
+    const getAllContacts = async () => {
+      try {
+        const contacts = await ContactsAPI.getAll();
+
+        console.log({ contacts });
+
+        if (contacts)
+          this.setState(() => ({
+            contacts,
+          }));
+      } catch (error) {
+        console.log({ error });
+      }
+    };
+
+    getAllContacts();
+  }
+
   removeContact = (contact) => {
     this.setState((currentState) => ({
       contacts: currentState.contacts.filter((c) => c.id !== contact.id),
     }));
+
+    ContactsAPI.remove(contact);
   };
 
   render() {
