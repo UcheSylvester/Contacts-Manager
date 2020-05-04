@@ -1,24 +1,33 @@
 import React from "react";
 
-const ListContacts = ({ contacts }) => (
+const ListContacts = ({ contacts, onDeleteContact }) => (
   <ol className="contact-list">
-    {contacts.map(({ name, avatarURL, handle }) => (
-      <li key={name} className="contact-list-item">
-        <div
-          className="contact-avatar"
-          style={{
-            backgroundImage: `url(${avatarURL})`,
-          }}
-        ></div>
+    {contacts.map((contact) => {
+      const { id, name, avatarURL, handle } = contact;
 
-        <div className="contact-name">
-          <p>{name}</p>
-          <p>{handle}</p>
-        </div>
+      return (
+        <li key={id} className="contact-list-item">
+          <div
+            className="contact-avatar"
+            style={{
+              backgroundImage: `url(${avatarURL})`,
+            }}
+          ></div>
 
-        <button className="contact-remove">Remove</button>
-      </li>
-    ))}
+          <div className="contact-name">
+            <p>{name}</p>
+            <p>{handle}</p>
+          </div>
+
+          <button
+            className="contact-remove"
+            onClick={() => onDeleteContact(contact)}
+          >
+            Remove
+          </button>
+        </li>
+      );
+    })}
   </ol>
 );
 
