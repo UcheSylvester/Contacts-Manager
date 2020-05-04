@@ -11,10 +11,15 @@ const ListContacts = ({ contacts, onDeleteContact }) => {
     setQuery(value.trim());
   };
 
+  const filteredContacts =
+    query === ""
+      ? contacts
+      : contacts.filter((contact) =>
+          contact.name.toLowerCase().includes(query.toLowerCase())
+        );
+
   return (
     <div className="list-contacts">
-      {JSON.stringify(query)}
-
       <div className="list-contacts-top">
         <input
           className="search-contacts"
@@ -26,7 +31,7 @@ const ListContacts = ({ contacts, onDeleteContact }) => {
       </div>
 
       <ol className="contact-list">
-        {contacts.map((contact) => {
+        {filteredContacts.map((contact) => {
           const { id, name, avatarURL, handle } = contact;
 
           return (
