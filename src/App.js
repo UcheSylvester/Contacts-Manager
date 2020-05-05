@@ -3,7 +3,7 @@ import "./App.css";
 import ListContacts from "./ListContacts";
 
 import { Route } from "react-router-dom";
-
+import { withRouter } from "react-router-dom";
 import * as ContactsAPI from "./utils/ContactsAPI";
 import CreateContacts from "./CreateContacts";
 
@@ -35,11 +35,28 @@ class App extends React.Component {
     try {
       const response = await ContactsAPI.remove(contact);
 
-      console.log({ response });
+      if (response)
+        this.setState((currentState) => ({
+          contacts: currentState.contacts.filter((c) => c.id !== contact.id),
+        }));
+    } catch (error) {
+      console.log({ error });
+    }
+  };
 
-      this.setState((currentState) => ({
-        contacts: currentState.contacts.filter((c) => c.id !== contact.id),
-      }));
+  createContact = async (contact) => {
+    try {
+      const newContact = await ContactsAPI.create(contact);
+
+      console.log({ newContact });
+
+      if (newContact) {
+        this.setState((currentState) => ({
+          contacts: currentState.contacts.concat([newContact]),
+        }));
+
+        this.props.history.push("/");
+      }
     } catch (error) {
       console.log({ error });
     }
@@ -60,10 +77,15 @@ class App extends React.Component {
           )}
         />
 
-        <Route path="/create" component={CreateContacts} />
+        <Route
+          path="/create"
+          render={(props) => (
+            <CreateContacts onCreateContact={this.createContact} {...props} />
+          )}
+        />
       </div>
     );
   }
 }
 
-export default App;
+export default withRouter(App);
